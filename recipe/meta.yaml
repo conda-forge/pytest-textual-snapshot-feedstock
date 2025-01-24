@@ -1,5 +1,5 @@
 {% set name = "pytest-textual-snapshot" %}
-{% set version = "1.0.0" %}
+{% set version = "1.1.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name | replace("-", "_") }}/{{ name | replace("-", "_") }}-{{ version }}.tar.gz
-  sha256: 065217055ed833b8a16f2320a0613f39a0154e8d9fee63535f29f32c6414b9d7
+  sha256: 96d48ab01306852a3b4ae165f008d5fdd7fda777e91e9d2c3ea0f7d7458544eb
 
 build:
   noarch: python
