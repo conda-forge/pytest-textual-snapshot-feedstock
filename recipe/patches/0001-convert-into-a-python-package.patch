@@ -1,0 +1,41 @@
+From: Backport of https://github.com/Textualize/pytest-textual-snapshot/pull/16
+Subject: [PATCH] Convert into a Python package
+
+Move the module and the report template into a `pytest_textual_snapshot`
+package so that the template is no longer installed as a top-level
+`resources` directory in site-packages (upstream issue #15).
+This also makes the `include = ["resources/**/*"]` workaround unnecessary,
+which poetry-core 2.x only honoured for sdists (upstream PR #26).
+
+diff --git a/pyproject.toml b/pyproject.toml
+index a36204b..3e3ff40 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -26,7 +26,6 @@ classifiers = [
+     "Operating System :: OS Independent",
+     "License :: OSI Approved :: MIT License"
+ ]
+-include = ["resources/**/*"]
+ 
+ [tool.poetry.dependencies]
+ python = "^3.8.1"
+@@ -37,7 +36,7 @@ syrupy = "4.8.0"
+ jinja2 = ">=3.0.0"
+ 
+ [tool.poetry.plugins."pytest11"]
+-"textual-snapshot" = "pytest_textual_snapshot"
++"textual-snapshot" = "pytest_textual_snapshot.plugin"
+ 
+ [build-system]
+ requires = ["poetry-core>=1.0.0"]
+diff --git a/pytest_textual_snapshot/__init__.py b/pytest_textual_snapshot/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/pytest_textual_snapshot.py b/pytest_textual_snapshot/plugin.py
+similarity index 100%
+rename from pytest_textual_snapshot.py
+rename to pytest_textual_snapshot/plugin.py
+diff --git a/resources/snapshot_report_template.jinja2 b/pytest_textual_snapshot/resources/snapshot_report_template.jinja2
+similarity index 100%
+rename from resources/snapshot_report_template.jinja2
+rename to pytest_textual_snapshot/resources/snapshot_report_template.jinja2

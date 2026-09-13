@@ -11,13 +11,21 @@ source:
   url: https://pypi.org/packages/source/p/pytest-textual-snapshot/pytest_textual_snapshot-${{ version }}.tar.gz
   sha256: 96d48ab01306852a3b4ae165f008d5fdd7fda777e91e9d2c3ea0f7d7458544eb
   patches:
-    # backport of https://github.com/Textualize/pytest-textual-snapshot/pull/26
-    # without it, poetry-core 2.x leaves resources/ out of the wheel
-    - patches/0001-include-resources-package-when-building-wheels.patch
+    # backport of https://github.com/Textualize/pytest-textual-snapshot/pull/16
+    # keeps the report template out of a top-level resources/ directory in
+    # site-packages and, as a side effect, makes it land in the wheel again
+    # (poetry-core 2.x only honours the include = ["resources/**/*"] for sdists)
+    - patches/0001-convert-into-a-python-package.patch
+    # backport of https://github.com/Textualize/pytest-textual-snapshot/pull/19
+    - patches/0002-fix-package-homepage-url.patch
+    # backport of https://github.com/Textualize/pytest-textual-snapshot/pull/23
+    - patches/0003-fix-datetime-utcnow-deprecation-warning.patch
+    # backport of https://github.com/Textualize/pytest-textual-snapshot/pull/24
+    - patches/0004-fix-compatibility-with-pytest-9-by-updating-syrupy.patch
 
 build:
   noarch: python
-  number: 1
+  number: 2
   script: python -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
@@ -30,7 +38,7 @@ requirements:
     - pytest >=8.0.0
     - rich >=12.0.0
     - textual >=0.28.0
-    - syrupy ==4.8.0
+    - syrupy >=5.0.0
     - jinja2 >=3.0.0
 
 tests:
@@ -43,9 +51,9 @@ tests:
         - "*"
   - package_contents:
       site_packages:
-        - pytest_textual_snapshot
+        - pytest_textual_snapshot/plugin.py
         - pytest_textual_snapshot-${{ version }}.dist-info/**/*
-        - resources/snapshot_report_template.jinja2
+        - pytest_textual_snapshot/resources/snapshot_report_template.jinja2
   - script:
       - python test.py
     files:

@@ -1,0 +1,25 @@
+From: Backport of https://github.com/Textualize/pytest-textual-snapshot/pull/23
+Subject: [PATCH] Fix Python 3.12+ datetime.utcnow() deprecation warning
+
+diff --git a/pytest_textual_snapshot/plugin.py b/pytest_textual_snapshot/plugin.py
+index 90884e0..8569b2d 100644
+--- a/pytest_textual_snapshot/plugin.py
++++ b/pytest_textual_snapshot/plugin.py
+@@ -6,7 +6,7 @@ import pickle
+ import re
+ import shutil
+ from dataclasses import dataclass
+-from datetime import datetime
++from datetime import datetime, timezone
+ from operator import attrgetter
+ from os import PathLike
+ from pathlib import Path, PurePath
+@@ -364,7 +364,7 @@ def save_svg_diffs(
+             pass_percentage=100 * (num_snapshots_passing / max(num_snapshot_tests, 1)),
+             fail_percentage=100 * (num_fails / max(num_snapshot_tests, 1)),
+             num_snapshot_tests=num_snapshot_tests,
+-            now=datetime.utcnow(),
++            now=datetime.now(tz=timezone.utc),
+             file_open_prefix=os.getenv("TEXTUAL_SNAPSHOT_FILE_OPEN_PREFIX", "file://"),
+         )
+         with open(snapshot_report_path, "w+", encoding="utf-8") as snapshot_file:
