@@ -1,0 +1,21 @@
+From: Backport of https://github.com/Textualize/pytest-textual-snapshot/pull/26
+Subject: [PATCH] Include `resources` package when building wheels
+
+`resources/**/*` had been included when building the wheel with poetry-core
+1.x, but poetry's `include` defaults to sdist-only, so with poetry-core 2.x
+the snapshot report template is missing from the wheel.
+
+diff --git a/pyproject.toml b/pyproject.toml
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -26,7 +26,9 @@ classifiers = [
+     "Operating System :: OS Independent",
+     "License :: OSI Approved :: MIT License"
+ ]
+-include = ["resources/**/*"]
++include = [
++    { path = "resources/**/*", format = ["sdist", "wheel"] }
++]
+ 
+ [tool.poetry.dependencies]
+ python = "^3.8.1"
